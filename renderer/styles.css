@@ -49,7 +49,9 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 14px;
+  padding: 14px 0;
+  min-width: 0;
+  min-height: 0;
   pointer-events: none;                  /* only the actual UI blocks; gaps pass through */
 }
 #toolbar, #panel-wrap, #settings-scrim, #onboard-scrim { pointer-events: auto; }
@@ -102,7 +104,17 @@ html, body {
 .tb-stop.active { color: #ff6b6b; }
 
 /* ============================ Panel ============================ */
-#panel-wrap { position: relative; margin-top: 12px; width: min(624px, 94vw); }
+#panel-wrap {
+  position: relative;
+  margin-top: 12px;
+  width: 94%;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+#toolbar { flex: 0 0 auto; max-width: 94%; }
 button:focus { outline: none; }
 #live-dot {
   position: absolute; top: -3px; left: -5px; z-index: 4;
@@ -121,11 +133,32 @@ button:focus { outline: none; }
   border-radius: var(--r-panel);
   box-shadow: 0 16px 48px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.10);
 }
-#panel { padding: 20px 22px; animation: overlayIn 260ms cubic-bezier(0.22,1,0.36,1); }
+#panel {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  padding: 20px 22px; animation: overlayIn 260ms cubic-bezier(0.22,1,0.36,1); }
 #panel.collapsed { display: none; }
 
 /* ============================ Messages ============================ */
-#messages { display: flex; flex-direction: column; overflow-y: auto; max-height: 50vh; }
+#messages {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  min-width: 0;
+  min-height: 72px;
+  overflow-y: auto;
+  max-height: 50vh;
+  overflow-wrap: anywhere;
+}
+#messages > * { flex-shrink: 0; min-width: 0; }
+#panel > :not(#messages) { flex-shrink: 0; min-width: 0; }
 .user-bubble {
   align-self: flex-end;
   max-width: 75%;
@@ -190,11 +223,12 @@ button:focus { outline: none; }
 
 /* ============================ Action row ============================ */
 #action-row {
-  display: flex; align-items: center; flex-wrap: nowrap; gap: 4px;
-  margin-top: 6px; white-space: nowrap;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+  margin-top: 6px; min-width: 0;
 }
 .act {
   display: inline-flex; align-items: center; gap: 6px;
+  flex: 0 0 auto; max-width: 100%; white-space: normal;
   border: none; background: transparent; cursor: pointer;
   color: var(--tx-2); font-size: 14px; font-weight: 500; font-family: var(--font);
   padding: 5px 7px; border-radius: 8px;
@@ -250,7 +284,8 @@ button:focus { outline: none; }
   max-height: 140px; overflow-y: auto;
   -webkit-user-select: text; user-select: text;
 }
-#composer-bottom { display: flex; align-items: center; gap: 8px; }
+#composer-bottom { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; min-width: 0; }
+#composer-bottom > button, .answer-modes { flex-shrink: 0; }
 .spacer { flex: 1; }
 .smart-pill {
   display: inline-flex; align-items: center; gap: 6px;
@@ -447,8 +482,16 @@ button:focus { outline: none; }
   #live-dot { animation: none !important; }
 }
 
-.answer-modes { display: inline-flex; gap: 6px; }
+.answer-modes { display: inline-flex; flex-wrap: wrap; max-width: 100%; gap: 6px; }
 .smart-pill:focus-visible { outline: 2px solid #7FB0F9; outline-offset: 2px; }
 .smart-pill.on { font-weight: 700; box-shadow: inset 0 0 0 1px #7FB0F9; }
 
-#composer-bottom { flex-wrap: wrap; }
+
+/* Keep controls inside narrow windows and leave scrolling inside the glass card. */
+@media (max-width: 520px) {
+  #panel { padding: 14px 12px; }
+  #composer { padding: 10px; }
+  .shortcut-hint, #action-row .sep { display: none; }
+  #action-row .act { font-size: 13px; }
+  #placeholder { font-size: 13px; }
+}

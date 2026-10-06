@@ -102,6 +102,8 @@ function createWindow() {
     transparent: true,
     hasShadow: false,
     resizable: true,
+    minWidth: 360,
+    minHeight: 300,
     skipTaskbar: true,
     alwaysOnTop: true,
     fullscreenable: false,
@@ -395,6 +397,29 @@ ipcMain.handle('transcript:clear', () => {
 ipcMain.on('ask', (_e, payload) => runFeature(payload.mode, payload.text));
 ipcMain.on('mic:pcm', (_e, arrayBuffer) => { if (state.capturing) routeAudio('you', arrayBuffer); });
 ipcMain.on('system:pcm', (_e, arrayBuffer) => { if (state.capturing) routeAudio('them', arrayBuffer); });
+let resizeStart = null;
+ipcMain.on('window:resize', (event, request) => {
+  if (!win || win.isDestroyed() || event.sender !== win.webContents || !request) return;
+  if (request.phase === 'end') { resizeStart = null; return; }
+  if (request.phase === 'start' && Number.isFinite(request.x) && Number.isFinite(request.y)) {
+    resizeStart = { ...win.getBounds(), pointerX: request.x, pointerY: request.y };
+    win.setIgnoreMouseEvents(false);
+    return;
+  }
+  const current = win.getBounds();
+  let width, height;
+  if (request.phase === 'move' && resizeStart && Number.isFinite(request.x) && Number.isFinite(request.y)) {
+    width = resizeStart.width + request.x - resizeStart.pointerX;
+    height = resizeStart.height + request.y - resizeStart.pointerY;
+  } else if (request.phase === 'step' && Number.isFinite(request.dx) && Number.isFinite(request.dy)) {
+    width = current.width + Math.max(-20, Math.min(20, request.dx));
+    height = current.height + Math.max(-20, Math.min(20, request.dy));
+  } else return;
+  const area = screen.getDisplayMatching(current).workArea;
+  win.setSize(Math.round(Math.max(360, Math.min(area.width, width))),
+    Math.round(Math.max(300, Math.min(area.height, height))));
+});
+
 ipcMain.on('mouse:ignore', (_e, v) => { if (win) win.setIgnoreMouseEvents(!!v, { forward: true }); });
 ipcMain.on('open-pane', (_e, url) => { shell.openExternal(url).catch(() => {}); });
 ipcMain.on('log', (_e, msg) => console.log('[renderer]', msg));

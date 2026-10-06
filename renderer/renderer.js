@@ -117,7 +117,7 @@
     if (!aiEl) return;
     const raw = aiEl.dataset.raw || '';
     aiEl.innerHTML = renderMarkdown(raw);
-    bionicify(aiEl);
+    if (settings?.bionicReading !== false) bionicify(aiEl);
     aiEl = null; caretEl = null;
   }
 
@@ -232,6 +232,60 @@
   }
   smartBtn.addEventListener('click', () => selectAnswerMode(true));
   fastBtn.addEventListener('click', () => selectAnswerMode(false));
+
+  const bionicBtn = $('#bionic-toggle');
+  function updateBionicReading() {
+    const enabled = settings.bionicReading !== false;
+    bionicBtn.classList.toggle('on', enabled);
+    bionicBtn.setAttribute('aria-pressed', String(enabled));
+    bionicBtn.textContent = enabled ? 'Bionic on' : 'Bionic off';
+    for (const answer of messages.querySelectorAll('.ai-text')) {
+      if (answer === aiEl || answer.dataset.raw === undefined) continue;
+      answer.innerHTML = renderMarkdown(answer.dataset.raw);
+      if (enabled) bionicify(answer);
+    }
+  }
+  bionicBtn.addEventListener('click', async () => {
+    if (!settings) return;
+    const previous = settings.bionicReading !== false;
+    settings.bionicReading = !previous;
+    updateBionicReading();
+    try { await cue.settingsSet({ bionicReading: settings.bionicReading }); }
+    catch (error) {
+      settings.bionicReading = previous;
+      updateBionicReading();
+      showStatus('Could not save Bionic mode: ' + error.message);
+    }
+  });
+
+  const resizeGrip = $('#resize-grip');
+  let resizing = false;
+  resizeGrip.addEventListener('pointerdown', (event) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    resizing = true;
+    resizeGrip.setPointerCapture(event.pointerId);
+    setIgnore(false);
+    cue.resizeWindow({ phase: 'start', x: event.screenX, y: event.screenY });
+  });
+  resizeGrip.addEventListener('pointermove', (event) => {
+    if (resizing) cue.resizeWindow({ phase: 'move', x: event.screenX, y: event.screenY });
+  });
+  function finishResize() {
+    if (!resizing) return;
+    resizing = false;
+    cue.resizeWindow({ phase: 'end' });
+  }
+  resizeGrip.addEventListener('pointerup', finishResize);
+  resizeGrip.addEventListener('pointercancel', finishResize);
+  resizeGrip.addEventListener('lostpointercapture', finishResize);
+  resizeGrip.addEventListener('keydown', (event) => {
+    const delta = { ArrowRight: [20, 0], ArrowLeft: [-20, 0], ArrowDown: [0, 20], ArrowUp: [0, -20] }[event.key];
+    if (!delta) return;
+    event.preventDefault();
+    cue.resizeWindow({ phase: 'step', dx: delta[0], dy: delta[1] });
+  });
+  window.addEventListener('blur', finishResize);
 
   const conciseBtn = $('#concise-toggle');
   function updateAnswerLength() {
@@ -767,7 +821,7 @@
   document.addEventListener('mousemove', (e) => {
     const el = document.elementFromPoint(e.clientX, e.clientY);
     const overUI = !!(el && el.closest && el.closest('#toolbar, #panel-wrap, #settings-scrim, #onboard-scrim'));
-    setIgnore(!overUI);
+    setIgnore(resizing ? false : !overUI);
   });
   setIgnore(true); // start fully click-through; hovering the panel re-enables it
 
@@ -870,6 +924,7 @@
     updateAnswerMode();
     updateAutoAnswer();
     updateAnswerLength();
+    updateBionicReading();
     showExample();
     syncPlaceholder();
 

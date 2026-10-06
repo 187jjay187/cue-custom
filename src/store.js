@@ -11,6 +11,7 @@ const DEFAULTS = {
   groqFallback: true,
   autoAnswer: true,
   conciseAnswers: true,
+  bionicReading: true,
   autoAnswerGroq: true,
   apiKeys: { openai: '', anthropic: '', gemini: '', groq: '', deepgram: '' },
   // Tab 2: Profile

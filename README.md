@@ -139,7 +139,7 @@ Speaking into your own microphone alone will not trigger Auto; Auto listens for 
 | **Three dots (...)** | Opens Settings. **Done** saves your changes. |
 | **Cue logo** | Opens the built-in introductory walkthrough. This README covers the customized features in more detail. |
 
-Drag the top bar to move Cue. **Bionic reading** is always applied when an answer finishes: the beginnings of words are bolded, while code is left unchanged. Auto, Concise, and Fast/Smart preferences are saved for future sessions.
+Drag the top bar to move Cue. **Bionic on/off** toggles bold word beginnings and saves your choice; code is left unchanged. Drag the diagonal grip at the bottom-right of the card to resize it. You can also focus the grip and use the arrow keys. Auto, Concise, and Fast/Smart preferences are saved for future sessions.
 
 ## 7. Keyboard shortcuts
 

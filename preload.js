@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld('cue', {
   captureState: () => ipcRenderer.invoke('capture:state'),
   micPcm: (arrayBuffer) => ipcRenderer.send('mic:pcm', arrayBuffer),
   systemPcm: (arrayBuffer) => ipcRenderer.send('system:pcm', arrayBuffer),
+  resizeWindow: (request) => ipcRenderer.send('window:resize', request),
   setIgnoreMouse: (v) => ipcRenderer.send('mouse:ignore', v),
   clearTranscript: () => ipcRenderer.invoke('transcript:clear'),
   openPane: (url) => ipcRenderer.send('open-pane', url),

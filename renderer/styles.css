@@ -495,3 +495,28 @@ button:focus { outline: none; }
   #action-row .act { font-size: 13px; }
   #placeholder { font-size: 13px; }
 }
+
+#resize-grip {
+  position: absolute; right: 8px; bottom: 8px;
+  width: 28px; height: 28px; padding: 0;
+  display: grid; place-items: center; z-index: 5;
+  border: 1px solid var(--bd-strong); border-radius: 7px;
+  background: rgba(28,30,38,0.95); color: var(--tx-2);
+  cursor: nwse-resize; touch-action: none;
+  -webkit-app-region: no-drag;
+}
+#resize-grip:hover { color: white; background: rgba(60,131,245,0.6); }
+#resize-grip:focus-visible { outline: 2px solid #7FB0F9; outline-offset: 2px; }
+#panel { flex: 1 1 auto; padding-bottom: 42px; }
+#panel-wrap:has(#panel.collapsed) #resize-grip { display: none; }
+
+.resize-grip-lines {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: repeating-linear-gradient(135deg,
+    transparent 0 3px, currentColor 3px 5px, transparent 5px 7px);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  opacity: 0.9;
+  pointer-events: none;
+}

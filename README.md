@@ -8,6 +8,7 @@ This guide is written for people who do not code. For the Windows download, you 
 
 1. [Download and open Cue](#1-download-and-open-cue-windows).
 2. [Get your free-tier Gemini and Groq keys](#2-custom-setup-get-your-gemini-and-groq-api-keys).
+   For live transcription, also follow the [optional Deepgram setup](#deepgram-optional-live-transcription).
 3. [Paste the keys into Cue](#3-add-your-keys-to-cue).
 4. [Add your background and allow microphone access](#4-finish-your-first-time-setup).
 5. [Try a question and test listening](#5-your-first-test).
@@ -59,11 +60,26 @@ See Groq's [getting-started guide](https://console.groq.com/docs/quickstart), [f
 
 Cue's Groq defaults are **GPT-OSS 20B for Fast** and **GPT-OSS 120B for Smart**. Despite the `openai/` prefix in their model names, they run through your **Groq** account; you do not need an OpenAI key. The older Llama 3.3 70B model was retired for free/developer accounts. See [Groq's current models](https://console.groq.com/docs/models) and [migration notice](https://console.groq.com/docs/deprecations).
 
+### Deepgram (optional): live transcription
+
+Deepgram provides streaming speech-to-text for your microphone and meeting audio. Cue automatically uses it when a Deepgram key is saved, ahead of OpenAI Realtime and batch transcription. It uses **Nova-3** with **English** transcription. Keep your Gemini/Groq keys for generating answers; a Deepgram key only enables transcription.
+
+1. Open the [Deepgram Console](https://console.deepgram.com/) and sign up or sign in.
+2. Select the project you want to use from the project dropdown. Open **Settings > API Keys** (or **API Keys** in the sidebar, depending on the console layout).
+3. Choose **Create a New API Key**. Name it something recognizable, such as `Cue desktop`, choose permissions that allow speech-to-text requests, and set an expiration that suits your use.
+4. Click **Create Key**, then copy the key secret and save it privately before dismissing the dialog. Deepgram shows the secret only once; create a replacement if you lose it.
+5. In Cue, open **three dots (...) > Settings > Keys**, paste only the key secret into **Deepgram**, and click **Done**. Do not add `Token`, quotes, or spaces. No source-code changes or environment variables are needed.
+6. Fully quit and reopen Cue, then start listening and open **Transcript**. Speak into your microphone to check **You**, and play meeting audio on your computer to check **Them**. The Keys tab should identify transcription as **Deepgram (streaming)**.
+
+Check your project's available credit, usage, and billing in the Deepgram Console before listening. Trial credit is not unlimited free transcription. See Deepgram's [API key creation instructions](https://developers.deepgram.com/docs/create-additional-api-keys) for the current console steps.
+
+If transcription fails, check that the key is complete, has not expired or been revoked, allows speech-to-text requests, and belongs to a project with available credit. Replace it in Cue and restart. If a Deepgram stream fails, Cue attempts batch transcription using your other saved transcription keys.
+
 ## 3. Add your keys to Cue
 
 1. Open Cue and click the **three dots (...)** beside its controls to open **Settings**.
 2. Select the **Keys** tab.
-3. Paste the Google key into **Gemini**, and the Groq key into **Groq**. Leave OpenAI, Anthropic, and Deepgram blank if you are not using them.
+3. Paste the Google key into **Gemini**, and the Groq key into **Groq**. If you followed the optional setup above, paste your Deepgram key into **Deepgram** for live transcription. Leave unused provider fields blank.
 4. Select **Gemini** in the provider row. This keeps screen-based questions on Gemini.
 5. Leave **Use Groq first for automatic answers** checked. With a saved Groq key, automatic conversation replies use Groq directly, without waiting for Gemini to fail.
 6. Leave **Use Groq if Gemini is busy or unavailable** checked. Manual Gemini requests can switch to Groq on a service error, rate limit, or timeout before answer text starts arriving.

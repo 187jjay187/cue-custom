@@ -1,6 +1,6 @@
 # Cue Custom ? simple setup and user guide
 
-Cue is a desktop assistant that can answer questions about your screen or conversation. This customized version adds **bionic reading**, separate **Fast / Smart** buttons, **Concise on/off**, automatic replies to recognized meeting-audio questions, and **Groq** support alongside **Google Gemini**.
+Cue is a desktop assistant that can answer questions about your screen or conversation. This customized version adds **bionic reading**, separate **Fast / Smart** buttons, **Concise on/off**, automatic replies to recognized questions from your microphone or meeting audio, and **Groq** support alongside **Google Gemini**.
 
 This guide is written for people who do not code. For the Windows download, you do not need Node.js, a terminal, or to edit any files.
 
@@ -128,11 +128,11 @@ Use Cue for practice, accessibility, and situations where assistance is permitte
 1. Click the **start/stop listening button** in the top bar (the square/stop icon).
 2. Click **Transcript** to see what Cue hears. **You** means your microphone; **Them** means audio playing on your computer.
 3. In a practice call, have the other participant ask a question and pause, such as ?Tell me about your experience.?
-4. With **Auto on**, Cue requests a reply after it recognizes a completed question from the **Them** channel. It shows **Preparing reply** while waiting for the answer to begin.
-5. If automatic detection misses a question, click **What should I say?** to request a reply manually.
+4. With **Auto on**, Cue requests a reply after it recognizes a completed question from either **You** (your microphone) or **Them** (meeting audio) and speech pauses. It shows **Preparing reply** while waiting for the answer to begin.
+5. Auto uses question marks and common question/prompt words; ordinary statements do not trigger replies. Switch **Auto off** when you prefer manual replies, and use **What should I say?** whenever you want another reply.
 6. Click the listening button again when finished.
 
-Speaking into your own microphone alone will not trigger Auto; Auto listens for questions on the **Them** channel. Transcription and generation still take time, and an internet/provider delay can slow them down. Groq's transcription uses uploaded audio segments, not a continuous real-time transcript stream. See [Groq speech-to-text](https://console.groq.com/docs/speech-to-text).
+Reading a question aloud into your microphone can trigger Auto, just like a question from the **Them** channel. Transcription and generation still take time, and an internet/provider delay can slow them down. Groq's transcription uses uploaded audio segments, not a continuous real-time transcript stream. See [Groq speech-to-text](https://console.groq.com/docs/speech-to-text).
 
 ## 6. What each button does
 
@@ -148,7 +148,7 @@ Speaking into your own microphone alone will not trigger Auto; Auto listens for 
 | **Smart** | Selects the Smart model for more involved questions. It may take longer. |
 | **Concise on** | Requests short, natural answers, usually 1?2 sentences. Click to turn it off. |
 | **Concise off** | Requests fuller explanations and more detailed stories. Click to turn it on. |
-| **Auto on** | Automatically requests a reply to recognized completed meeting-audio questions while listening. |
+| **Auto on** | Automatically requests a reply to recognized questions from either your microphone or meeting audio while listening. |
 | **Auto off** | Leaves answer requests to you; listening can still transcribe. |
 | **Top-bar listening button** | Starts or stops microphone and meeting-audio capture. |
 | **Hide** | Collapses or expands the answer panel. It does not quit Cue or stop listening. |
@@ -184,11 +184,11 @@ Auto, Concise, Fast/Smart, and listening have on-screen buttons rather than dedi
 | **401 / invalid key** | Copy the full key again into the matching provider field, remove stray spaces, and click **Done**. Replace a revoked key. |
 | **403 / model access error** | Check the key's project permissions and whether the chosen model is available to your plan. |
 | **Model not found / retired model** | Check the provider's current model list and update its Fast/Smart model fields in Settings. Do not use the retired free-tier Llama 70B model. |
-| **No automatic reply** | Check **Auto on**, listening is active, and **Transcript** shows the question under **Them**. Auto may miss unusual wording; use **What should I say?**. |
+| **No automatic reply** | Check **Auto on**, listening is active, and **Transcript** shows the question under **You** or **Them**. Check for transcription or provider errors; use **What should I say?** to retry manually. |
 | **Nothing under Them** | Check meeting sound is playing through this computer. Toggle listening off/on and read any capture error shown in Cue. |
 | **Meeting audio cannot start** | Restart Cue and check microphone access and your output device. If Windows reports no loopback track, check the playback device's exclusive-mode setting. |
-| **Only mic input is heard** | Your mic and meeting audio are separate. Own-mic questions are not used to trigger Auto. Test with another participant's computer playback. |
-| **Replies take time** | Use Fast, keep Groq-first automatic answers enabled, and check the network. Automatic detection waits for the question to finish; instant answers are not guaranteed. |
+| **Only mic input is heard** | Your mic and meeting audio are separate. Recognized questions on either channel trigger Auto. Test with another participant's computer playback. |
+| **Replies take time** | Use Fast, keep Groq-first automatic answers enabled, and check the network. Auto waits for speech on both channels to pause and any active answer to finish; instant answers are not guaranteed. |
 | **New controls are missing** | Fully quit Cue, reopen the latest downloaded build, and make sure you are not launching an older copy. |
 | **Cannot see GitHub downloads** | Sign in with an account that has access to this private repository. Artifacts can expire; run a new build if needed. |
 
